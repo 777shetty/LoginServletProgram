@@ -9,16 +9,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.regex.Pattern;
 
 @WebServlet(
         description = "Login servlet",
         urlPatterns = {"/LoginServlet"},
         initParams = {
-                @WebInitParam(name="user", value="admin"),
+                @WebInitParam(name="user", value="Admin"),
                 @WebInitParam(name="password", value="admin@777"),
         }
 )
 public class LoginServlet  extends HttpServlet {
+	
+	private static final String NAME_PATTERN="^[A-Z][a-z]{2,}$";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -26,10 +29,11 @@ public class LoginServlet  extends HttpServlet {
         String pwd = request.getParameter("pwd");
         String userID = getServletConfig().getInitParameter("user");
         String password = getServletConfig().getInitParameter("password");
+        Pattern namePattern = Pattern.compile(NAME_PATTERN);
 
-        if(userID.equals(user) && password.equals(pwd)){
+        if(namePattern.matcher(user).matches() && password.equals(pwd)){
             request.setAttribute("user", user);
-            request.getRequestDispatcher("LoginSuccess.jsp").forward(request, response);
+            request.getRequestDispatcher("Success.jsp").forward(request, response);
 
         }else{
             RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
