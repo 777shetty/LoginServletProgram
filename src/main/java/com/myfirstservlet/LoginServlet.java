@@ -22,6 +22,7 @@ import java.util.regex.Pattern;
 public class LoginServlet  extends HttpServlet {
 	
 	private static final String NAME_PATTERN="^[A-Z][a-z]{2,}$";
+	private static final String PASSWORD_PATERN="^(?=.*[A-Z])(?=.*[0-9])(?=.{8,})[0-9a-zA-Z]*[^0-9a-zA-Z][0-9a-zA-Z]*$";
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -30,13 +31,14 @@ public class LoginServlet  extends HttpServlet {
         String userID = getServletConfig().getInitParameter("user");
         String password = getServletConfig().getInitParameter("password");
         Pattern namePattern = Pattern.compile(NAME_PATTERN);
+        Pattern passwordPattern = Pattern.compile(PASSWORD_PATERN);
 
-        if(namePattern.matcher(user).matches() && password.equals(pwd)){
+        if(namePattern.matcher(user).matches() && passwordPattern.matcher(pwd).matches()){
             request.setAttribute("user", user);
             request.getRequestDispatcher("Success.jsp").forward(request, response);
 
         }else{
-            RequestDispatcher rd = getServletContext().getRequestDispatcher("/login.html");
+            RequestDispatcher rd = getServletContext().getRequestDispatcher("/Login.html");
             PrintWriter out = response.getWriter();
             out.println("<font color=red>The user name or password is incorrect</font>");
             rd.include(request, response);
